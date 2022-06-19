@@ -1,17 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: KNIME CDK Integration
+Bundle-Name: KNIME CDK2 Integration
 Bundle-SymbolicName: org.openscience.cdk.knime;singleton:=true
-Bundle-Version: 1.5.700.qualifier
+Bundle-Version: 2.7.100.qualifier
 Bundle-Vendor: KNIME GmbH, Konstanz and EMBL-EBI, Cambridge
-Bundle-ClassPath: knime-cdk.jar,
- lib/jmol-10.jar,
- lib/jchempaint-hotfix-3.4.jar,
- lib/ambit2-base-2.6.0-SNAPSHOT.jar,
- lib/ambit2-core-2.6.0-SNAPSHOT.jar,
- lib/ambit2-smarts-2.6.0-SNAPSHOT.jar,
- lib/ambit2-tautomers-2.6.0-SNAPSHOT.jar,
- lib/cdk-bundle-1.5.13.jar
+Bundle-ClassPath: bin/,
+ knime-cdk.jar,
+ lib/cdk-bundle-2.7.1.jar
 Require-Bundle: org.knime.base;bundle-version="[3.0.0,5.0.0)",
  org.eclipse.ui;bundle-version="3.6.1",
  org.knime.workbench.repository;bundle-version="[3.0.0,5.0.0)",
@@ -105,15 +100,11 @@ Export-Package: javax.vecmath,
  org.openscience.cdk.knime.nodes.opsin,
  org.openscience.cdk.knime.nodes.rmsdcalculator,
  org.openscience.cdk.knime.nodes.smarts,
- org.openscience.cdk.knime.nodes.sssearch,
  org.openscience.cdk.knime.nodes.sugarremover,
  org.openscience.cdk.knime.nodes.sumformula,
  org.openscience.cdk.knime.nodes.symmetrycalculator,
  org.openscience.cdk.knime.preferences,
- org.openscience.cdk.knime.sketcher,
  org.openscience.cdk.knime.type,
- org.openscience.cdk.knime.util,
- org.openscience.cdk.knime.view3d,
  org.openscience.cdk.layout,
  org.openscience.cdk.libio.cml,
  org.openscience.cdk.libio.jena,
@@ -187,32 +178,9 @@ Export-Package: javax.vecmath,
  org.openscience.cdk.tools.manipulator,
  org.openscience.cdk.tools.periodictable,
  org.openscience.cdk.validate,
- org.openscience.jchempaint,
- org.openscience.jchempaint.action,
- org.openscience.jchempaint.applet,
- org.openscience.jchempaint.application,
- org.openscience.jchempaint.controller,
- org.openscience.jchempaint.controller.undoredo,
- org.openscience.jchempaint.dialog,
- org.openscience.jchempaint.dialog.editor,
- org.openscience.jchempaint.dialog.templates,
- org.openscience.jchempaint.inchi,
- org.openscience.jchempaint.io,
- org.openscience.jchempaint.renderer,
- org.openscience.jchempaint.renderer.color,
- org.openscience.jchempaint.renderer.elements,
- org.openscience.jchempaint.renderer.elements.path,
- org.openscience.jchempaint.renderer.font,
- org.openscience.jchempaint.renderer.generators,
- org.openscience.jchempaint.renderer.generators.parameter,
- org.openscience.jchempaint.renderer.selection,
- org.openscience.jchempaint.renderer.visitor,
- org.openscience.jchempaint.rgroups,
- org.openscience.jchempaint.undoredo,
- org.openscience.jmol.app,
  signature
 Bundle-Activator: org.openscience.cdk.knime.CDKNodePlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.w3c.dom.events;version="3.0.0"
-Automatic-Module-Name: org.openscience.cdk.knime
+Automatic-Module-Name: org.openscience.cdk2.knime

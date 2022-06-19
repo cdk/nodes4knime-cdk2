@@ -17,8 +17,6 @@
  */
 package org.openscience.cdk.knime.commons;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 
@@ -212,7 +210,10 @@ public class MolConverter {
 
 			boolean fixBondOrder = false;
 			for (IBond bond : mol.bonds()) {
-				IBond.Order order = checkNotNull(bond.getOrder(), "Aromaticity model requires that bond orders must be set");
+				if (bond.getOrder() == null) {
+					throw new RuntimeException("Aromaticity model requires that bond orders must be set");
+				}
+				IBond.Order order = bond.getOrder();
 				if (order == Order.UNSET) {
 					fixBondOrder = true;
 					break;

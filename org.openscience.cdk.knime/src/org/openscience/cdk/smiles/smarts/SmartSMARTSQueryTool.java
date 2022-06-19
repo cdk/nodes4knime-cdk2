@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 import org.knime.core.data.def.IntCell;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.isomorphism.ComponentGrouping;
 import org.openscience.cdk.isomorphism.Mappings;
 import org.openscience.cdk.isomorphism.Pattern;
 import org.openscience.cdk.isomorphism.SmartsStereoMatch;
@@ -54,33 +53,33 @@ public class SmartSMARTSQueryTool {
 
 	public boolean matches(IAtomContainer atomContainer) throws CDKException {
 
-		SmartsMatchers.prepare(atomContainer, RING_QUERY);
-
-		for (Entry<Pattern, QueryAtomContainer> entry : queries.entrySet()) {
-			Mappings mappings = entry.getKey().matchAll(atomContainer)
-					.filter(new SmartsStereoMatch(entry.getValue(), atomContainer))
-					.filter(new ComponentGrouping(entry.getValue(), atomContainer));
-			
-			if (mappings.atLeast(1)) {
-				return true;
-			}
-		}
+//		SmartsMatchers.prepare(atomContainer, RING_QUERY);
+//
+//		for (Entry<Pattern, QueryAtomContainer> entry : queries.entrySet()) {
+//			Mappings mappings = entry.getKey().matchAll(atomContainer)
+//					.filter(new SmartsStereoMatch(entry.getValue(), atomContainer))
+//					.filter(new ComponentGrouping(entry.getValue(), atomContainer));
+//			
+//			if (mappings.atLeast(1)) {
+//				return true;
+//			}
+//		}
 
 		return false;
 	}
 	
 	public List<IntCell> countUnique(IAtomContainer atomContainer) throws CDKException {
 		
-		SmartsMatchers.prepare(atomContainer, RING_QUERY);
-
+//		SmartsMatchers.prepare(atomContainer, RING_QUERY);
+//
 		List<IntCell> total = new ArrayList<>();
-		for (Entry<Pattern, QueryAtomContainer> entry : queries.entrySet()) {
-			Mappings mappings = entry.getKey().matchAll(atomContainer)
-					.filter(new SmartsStereoMatch(entry.getValue(), atomContainer))
-					.filter(new ComponentGrouping(entry.getValue(), atomContainer));
-			
-			total.add(new IntCell(mappings.countUnique()));
-		}
+//		for (Entry<Pattern, QueryAtomContainer> entry : queries.entrySet()) {
+//			Mappings mappings = entry.getKey().matchAll(atomContainer)
+//					.filter(new SmartsStereoMatch(entry.getValue(), atomContainer))
+//					.filter(new ComponentGrouping(entry.getValue(), atomContainer));
+//			
+//			total.add(new IntCell(mappings.countUnique()));
+//		}
 		
 		return total;
 	}
@@ -95,13 +94,13 @@ public class SmartSMARTSQueryTool {
 	public List<Mappings> getMappings(IAtomContainer atomContainer)
 	{
 		List<Mappings> totalMappings = new ArrayList<Mappings>();
-		for (Entry<Pattern, QueryAtomContainer> entry : queries.entrySet()) {
-			Mappings mappings = entry.getKey().matchAll(atomContainer)
-					.filter(new SmartsStereoMatch(entry.getValue(), atomContainer))
-					.filter(new ComponentGrouping(entry.getValue(), atomContainer));
-			
-			totalMappings.add(mappings);
-		}
+//		for (Entry<Pattern, QueryAtomContainer> entry : queries.entrySet()) {
+//			Mappings mappings = entry.getKey().matchAll(atomContainer)
+//					.filter(new SmartsStereoMatch(entry.getValue(), atomContainer))
+//					.filter(new ComponentGrouping(entry.getValue(), atomContainer));
+//			
+//			totalMappings.add(mappings);
+//		}
 		
 		return totalMappings;
 	}

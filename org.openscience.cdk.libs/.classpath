@@ -5,7 +5,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/cdk-atomtype-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-builder3d-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-builder3dtools-2.7.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/cdk-bundle-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-charges-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-cip-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-control-2.7.1.jar"/>
@@ -51,12 +50,12 @@
 	<classpathentry exported="true" kind="lib" path="libs/cdk-renderawt-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-renderbasic-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-renderextra-2.7.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/cdk-sdg-2.7.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/cdk-sdg-2.7.1.jar" sourcepath="C:/Workspace/personal/cdk/tool/sdg"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-signature-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-silent-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-smarts-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-smiles-2.7.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/cdk-standard-2.7.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/cdk-standard-2.7.1.jar" sourcepath="C:/Workspace/personal/cdk/base/standard"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-structgen-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-tautomer-2.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/cdk-valencycheck-2.7.1.jar"/>
@@ -88,7 +87,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/jna-inchi-win32-x86-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jna-inchi-win32-x86-64-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/joda-time-1.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/junit-4.13.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/log4j-1.2-api-2.17.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/log4j-api-2.17.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/serializer-2.7.2.jar"/>

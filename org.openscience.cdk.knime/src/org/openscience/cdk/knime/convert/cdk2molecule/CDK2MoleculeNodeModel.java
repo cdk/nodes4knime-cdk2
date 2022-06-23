@@ -27,6 +27,7 @@ import org.knime.base.node.parallel.appender.ThreadedColAppenderNodeModel;
 import org.knime.chem.types.CMLCell;
 import org.knime.chem.types.InchiCellFactory;
 import org.knime.chem.types.Mol2Cell;
+import org.knime.chem.types.MolCellFactory;
 import org.knime.chem.types.SdfCell;
 import org.knime.chem.types.SmilesCell;
 import org.knime.core.data.DataColumnSpec;
@@ -100,6 +101,10 @@ public class CDK2MoleculeNodeModel extends ThreadedColAppenderNodeModel {
 			type = CMLCell.TYPE;
 		} else if (m_settings.destFormat() == Format.INCHI) {
 			type = InchiCellFactory.TYPE;
+		} else if (m_settings.destFormat() == Format.MOL_V2000) {
+			type = MolCellFactory.TYPE;
+		} else if (m_settings.destFormat() == Format.MOL_V3000) {
+			type = MolCellFactory.TYPE;
 		}
 
 		DataTableSpec outSpec;

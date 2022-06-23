@@ -39,7 +39,11 @@ public class CDK2MoleculeSettings {
 		/** Chemical Markup Language. */
 		CML,
 		/** InChi string */
-		INCHI
+		INCHI,
+		/** MDL Molfile in V2000 format */
+		MOL_V2000,
+		/** MDL Molfile in V3000 format */
+		MOL_V3000
 	}
 
 	private String m_colName;

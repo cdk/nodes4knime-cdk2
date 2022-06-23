@@ -29,6 +29,7 @@ import org.knime.chem.types.InchiCell;
 import org.knime.chem.types.InchiCellFactory;
 import org.knime.chem.types.Mol2Cell;
 import org.knime.chem.types.Mol2CellFactory;
+import org.knime.chem.types.MolCellFactory;
 import org.knime.chem.types.SdfCell;
 import org.knime.chem.types.SdfCellFactory;
 import org.knime.chem.types.SmilesCell;
@@ -47,6 +48,7 @@ import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.MDLV2000Writer;
+import org.openscience.cdk.io.MDLV3000Writer;
 import org.openscience.cdk.io.Mol2Writer;
 import org.openscience.cdk.knime.convert.cdk2molecule.CDK2MoleculeSettings.Format;
 import org.openscience.cdk.knime.type.CDKValue;
@@ -109,6 +111,38 @@ class MolConverter implements ExtendedCellFactory {
 			writer.writeMolecule(mol);
 			writer.close();
 			return Mol2CellFactory.create(out.toString());
+		}
+	}
+	
+	private class MolV2000Conv implements Conv {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public DataCell conv(final IAtomContainer mol) throws Exception {
+
+			StringWriter out = new StringWriter(1024);
+			MDLV2000Writer writer = new MDLV2000Writer(out);
+			writer.writeMolecule(mol);
+			writer.close();
+			return MolCellFactory.create(out.toString());
+		}
+	}
+	
+	private class MolV3000Conv implements Conv {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public DataCell conv(final IAtomContainer mol) throws Exception {
+
+			StringWriter out = new StringWriter(1024);
+			MDLV3000Writer writer = new MDLV3000Writer(out);
+			writer.write(mol);
+			writer.close();
+			return MolCellFactory.create(out.toString());
 		}
 	}
 
@@ -193,6 +227,12 @@ class MolConverter implements ExtendedCellFactory {
 		} else if (settings.destFormat() == Format.INCHI) {
 			type = InchiCellFactory.TYPE;
 			m_converter = new InchiConv();
+		} else if (settings.destFormat() == Format.MOL_V2000) {
+			type = MolCellFactory.TYPE;
+			m_converter = new MolV2000Conv();
+		} else if (settings.destFormat() == Format.MOL_V3000) {
+			type = MolCellFactory.TYPE;
+			m_converter = new MolV3000Conv();
 		} else {
 			type = CMLCell.TYPE;
 			m_converter = new CMLConv();

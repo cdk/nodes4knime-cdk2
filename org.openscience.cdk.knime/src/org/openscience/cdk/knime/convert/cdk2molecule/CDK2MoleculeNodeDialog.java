@@ -34,6 +34,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import org.knime.chem.types.CMLValue;
+import org.knime.chem.types.InchiValue;
 import org.knime.chem.types.Mol2Value;
 import org.knime.chem.types.SdfValue;
 import org.knime.chem.types.SmilesValue;
@@ -57,7 +58,7 @@ public class CDK2MoleculeNodeDialog extends NodeDialogPane {
 	@SuppressWarnings("unchecked")
 	private final ColumnSelectionComboxBox m_molColumn = new ColumnSelectionComboxBox((Border) null, CDKValue.class);
 
-	private final JComboBox<Format> m_destFormat = new JComboBox<Format>(new Format[] { Format.SDF, Format.Smiles, Format.Mol2 });
+	private final JComboBox<Format> m_destFormat = new JComboBox<Format>(new Format[] { Format.SDF, Format.Smiles, Format.Mol2, Format.INCHI });
 
 	private final JCheckBox m_replaceColumn = new JCheckBox();
 
@@ -132,7 +133,11 @@ public class CDK2MoleculeNodeDialog extends NodeDialogPane {
 				} else if (value == Format.CML) {
 					setIcon(CMLValue.UTILITY.getIcon());
 					setText("CML");
-				} else {
+				} else if (value == Format.INCHI) {
+					setIcon(InchiValue.UTILITY.getIcon());
+					setText("InChi");
+				}
+				else {
 					setIcon(null);
 					setText("");
 				}

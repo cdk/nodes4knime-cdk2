@@ -37,7 +37,7 @@ import org.knime.core.data.renderer.AbstractPainterDataValueRenderer;
 import org.knime.core.data.renderer.DataValueRenderer;
 import org.knime.core.node.NodeLogger;
 import org.openscience.cdk.AtomContainer;
-import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.geometry.GeometryUtil;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -222,8 +222,8 @@ public class CDKValueRenderer extends AbstractPainterDataValueRenderer {
 		}
 
 		boolean threeD = false;
-		if (!GeometryTools.has2DCoordinates(m_mol)) {
-			if (GeometryTools.has3DCoordinates(m_mol)) {
+		if (!GeometryUtil.has2DCoordinates(m_mol)) {
+			if (GeometryUtil.has3DCoordinates(m_mol)) {
 				g.drawString("3D view not supported", 2, 14);
 				threeD = true;
 			} else {
@@ -234,7 +234,7 @@ public class CDKValueRenderer extends AbstractPainterDataValueRenderer {
 		}
 
 		boolean twoThreeD = false;
-		if (GeometryTools.has2DCoordinates(m_mol) && GeometryTools.has3DCoordinates(m_mol)) {
+		if (GeometryUtil.has2DCoordinates(m_mol) && GeometryUtil.has3DCoordinates(m_mol)) {
 			g.drawString("Using 2D coordinates", 2, 14);
 			twoThreeD = true;
 		}
@@ -273,14 +273,14 @@ public class CDKValueRenderer extends AbstractPainterDataValueRenderer {
 				}
 			});
 
-			Dimension dim = GeometryTools.get2DDimension(molSet.getAtomContainer(0));
+			double[] dim = GeometryUtil.get2DDimension(molSet.getAtomContainer(0));
 			cont.add(molSet.getAtomContainer(0));
 
 			for (int i = 1; i < molSet.getAtomContainerCount(); i++) {
 				IAtomContainer curMol = molSet.getAtomContainer(i);
-				cumX += dim.width;
-				GeometryTools.translate2D(curMol, cumX, 0);
-				dim = GeometryTools.get2DDimension(curMol);
+				cumX += dim[0];
+				GeometryUtil.translate2D(curMol, cumX, 0);
+				dim = GeometryUtil.get2DDimension(curMol);
 				cont.add(curMol);
 			}
 		} else {

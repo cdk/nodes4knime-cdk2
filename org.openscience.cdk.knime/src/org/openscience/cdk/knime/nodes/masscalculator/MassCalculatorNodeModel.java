@@ -29,9 +29,11 @@ import org.knime.core.data.def.DoubleCell;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.knime.commons.CDKNodeUtils;
 import org.openscience.cdk.knime.core.CDKNodeModel;
+import org.openscience.cdk.knime.type.CDKValue;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
@@ -141,18 +143,25 @@ public class MassCalculatorNodeModel extends CDKNodeModel {
 				}
 
 				try {
-					String sumFormulaString = (String) ((StringValue) cell).getStringValue();
-					IMolecularFormula sumFormula = MolecularFormulaManipulator.getMolecularFormula(sumFormulaString,
-							SilentChemObjectBuilder.getInstance());
-					double mass;
-					if (massOption == Mass.MOLECULAR_WEIGHT) {
-						mass = MolecularFormulaManipulator.getMajorIsotopeMass(sumFormula);
-					} else {
-						mass = MolecularFormulaManipulator.getNaturalExactMass(sumFormula);
+					
+					IMolecularFormula formula = null;
+					
+					if(cell instanceof CDKValue) {
+						
+						IAtomContainer container = ((CDKValue) cell).getAtomContainer();
+						
+						formula = MolecularFormulaManipulator.getMolecularFormula(container);
+						
+						
+					} else if(cell instanceof StringValue) {
+						String sumFormulaString = (String) ((StringValue) cell).getStringValue();
+						formula= MolecularFormulaManipulator.getMolecularFormula(sumFormulaString, SilentChemObjectBuilder.getInstance());
 					}
 
-					return new DoubleCell(mass);
-				} catch (Throwable t) {
+					
+					return new DoubleCell(calculateMass(formula, massOption));
+				} catch (Throwable t) 
+				{
 					return DataType.getMissingCell();
 				}
 			}
@@ -161,5 +170,18 @@ public class MassCalculatorNodeModel extends CDKNodeModel {
 		ColumnRearranger arranger = new ColumnRearranger(spec);
 		arranger.append(cf);
 		return arranger;
+	}
+	
+	private double calculateMass(IMolecularFormula formula, Mass option)
+	{
+		Double mass = null;
+		
+		if (massOption == Mass.MOLECULAR_WEIGHT) {
+			mass = MolecularFormulaManipulator.getMass(formula, MolecularFormulaManipulator.MonoIsotopic);
+		} else {
+			mass = MolecularFormulaManipulator.getMass(formula, MolecularFormulaManipulator.MolWeightIgnoreSpecified);
+		}
+		
+		return mass;
 	}
 }

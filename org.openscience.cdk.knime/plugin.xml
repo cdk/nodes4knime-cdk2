@@ -21,7 +21,6 @@
    	  <node category-path="/community/cdk2/3d" factory-class="org.openscience.cdk.knime.nodes.rmsdcalculator.RMSDCalculatorNodeFactory" id="org.openscience.cdk.knime.rmsdcalculator.RMSDCalculatorNodeFactory"/>
       <node category-path="/community/cdk2" factory-class="org.openscience.cdk.knime.nodes.sumformula.SumFormulaNodeFactory" id="org.openscience.cdk.knime.sumformula.SumFormulaNodeFactory"/>
       <node category-path="/community/cdk2" factory-class="org.openscience.cdk.knime.nodes.elementfilter.ElementFilterNodeFactory" id="org.openscience.cdk.knime.elementfilter.ElementFilterNodeFactory"/>
-      <node category-path="/community/cdk2" factory-class="org.openscience.cdk.knime.nodes.opsin.OpsinNameConverterNodeFactory" id="org.openscience.cdk.knime.opsin.OpsinNameConverterNodeFactory"/>
 	  <node category-path="/community/cdk2/3d" factory-class="org.openscience.cdk.knime.nodes.descriptors.whim3d.Whim3dNodeFactory" id="org.openscience.cdk.knime.whim3d.Whim3dNodeFactory"/>
 	  <node category-path="/community/cdk2/3d" factory-class="org.openscience.cdk.knime.nodes.coord3d.Coord3dNodeFactory" id="org.openscience.cdk.knime.coord3d.Coord3dNodeFactory"/>
 	  <node category-path="/community/cdk2/3d" factory-class="org.openscience.cdk.knime.nodes.descriptors.distance3d.Distance3dNodeFactory" id="org.openscience.cdk.knime.distance3d.Distance3dNodeFactory"/>

@@ -34,7 +34,9 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import org.knime.chem.types.CMLValue;
+import org.knime.chem.types.InchiValue;
 import org.knime.chem.types.Mol2Value;
+import org.knime.chem.types.MolValue;
 import org.knime.chem.types.SdfValue;
 import org.knime.chem.types.SmilesValue;
 import org.knime.core.data.DataTableSpec;
@@ -57,7 +59,7 @@ public class CDK2MoleculeNodeDialog extends NodeDialogPane {
 	@SuppressWarnings("unchecked")
 	private final ColumnSelectionComboxBox m_molColumn = new ColumnSelectionComboxBox((Border) null, CDKValue.class);
 
-	private final JComboBox<Format> m_destFormat = new JComboBox<Format>(new Format[] { Format.SDF, Format.Smiles, Format.Mol2 });
+	private final JComboBox<Format> m_destFormat = new JComboBox<Format>(new Format[] { Format.SDF, Format.Smiles, Format.Mol2, Format.INCHI, Format.MOL_V2000, Format.MOL_V3000 });
 
 	private final JCheckBox m_replaceColumn = new JCheckBox();
 
@@ -132,6 +134,16 @@ public class CDK2MoleculeNodeDialog extends NodeDialogPane {
 				} else if (value == Format.CML) {
 					setIcon(CMLValue.UTILITY.getIcon());
 					setText("CML");
+				} else if (value == Format.INCHI) {
+					setIcon(InchiValue.UTILITY.getIcon());
+					setText("InChi");
+				} else if (value == Format.MOL_V2000) {
+					setIcon(MolValue.UTILITY.getIcon());
+					setText("Mol V2000");
+				}
+				else if (value == Format.MOL_V3000) {
+					setIcon(MolValue.UTILITY.getIcon());
+					setText("Mol V3000");
 				} else {
 					setIcon(null);
 					setText("");

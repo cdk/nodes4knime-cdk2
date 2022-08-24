@@ -37,7 +37,13 @@ public class CDK2MoleculeSettings {
 		/** Tripos Mol2. */
 		Mol2,
 		/** Chemical Markup Language. */
-		CML
+		CML,
+		/** InChi string */
+		INCHI,
+		/** MDL Molfile in V2000 format */
+		MOL_V2000,
+		/** MDL Molfile in V3000 format */
+		MOL_V3000
 	}
 
 	private String m_colName;

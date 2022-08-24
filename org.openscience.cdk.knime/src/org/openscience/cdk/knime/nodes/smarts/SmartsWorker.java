@@ -17,13 +17,16 @@
 package org.openscience.cdk.knime.nodes.smarts;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.knime.base.data.replace.ReplacedColumnsDataRow;
 import org.knime.core.data.AdapterValue;
@@ -45,7 +48,6 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.isomorphism.Mappings;
 import org.openscience.cdk.knime.type.CDKCell3;
 import org.openscience.cdk.knime.type.CDKValue;
-import org.openscience.cdk.smiles.smarts.SmartSMARTSQueryTool;
 
 public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 {
@@ -60,7 +62,7 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 	private final boolean count;
 	private final boolean matchedPositions;
 
-	private final SmartSMARTSQueryTool smarts;
+	private final MultipleSmartsMatcher smarts;
 	private final Set<Long> matchedRows;
 
 	public SmartsWorker(final int maxQueueSize, final int maxActiveInstanceSize, final int columnIndex, final long max,
@@ -73,7 +75,7 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 		this.bdc = bdc;
 		this.count = count;
 		this.max = max;
-		this.smarts = new SmartSMARTSQueryTool(smarts);
+		this.smarts = new MultipleSmartsMatcher(smarts);
 		this.columnIndex = columnIndex;
 		this.matchedRows = Collections.synchronizedSet(new HashSet<Long>());
 		this.matchedPositions = matchedPositions;
@@ -84,10 +86,9 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 	{
 
 		DataCell outCell;
-		List<IntCell> uniqueCounts = new ArrayList<>();
+		List<DataCell> uniqueCounts = new ArrayList<>();
 		DataRow countRow = row;
-		if (row.getCell(columnIndex).isMissing()
-				|| (((AdapterValue) row.getCell(columnIndex)).getAdapterError(CDKValue.class) != null))
+		if (row.getCell(columnIndex).isMissing() || (((AdapterValue) row.getCell(columnIndex)).getAdapterError(CDKValue.class) != null))
 		{
 			outCell = DataType.getMissingCell();
 		} else
@@ -97,19 +98,24 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 
 			try
 			{
-				if (smarts.matches(m))
+				
+				if(count || matchedPositions) 
 				{
-					matchedRows.add(index);
-					if (count || matchedPositions)
+					List<Mappings> mappings = smarts.getMappings(m);
+					
+					if(mappings.stream().filter(mapping -> mapping.atLeast(1)).findAny().isPresent()) 
 					{
-						uniqueCounts = smarts.countUnique(m);
-
-						if (matchedPositions)
+						matchedRows.add(index);
+						
+						for(Mappings mapping : mappings)
 						{
-							List<Mappings> mappings = smarts.getMappings(m);
-
-							List<DataCell> atoms = new ArrayList<DataCell>();
-							List<DataCell> bonds = new ArrayList<DataCell>();
+							uniqueCounts.add(IntCellFactory.create(mapping.countUnique()));
+						}
+						
+						if(matchedPositions)
+						{
+							Set<Integer> atoms = new HashSet<>();
+							Set<Integer> bonds = new HashSet<>();
 
 							for (Mappings map : mappings)
 							{
@@ -117,7 +123,7 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 								{
 									for (IAtom atom : current.values())
 									{
-										atoms.add((IntCell) IntCellFactory.create(Integer.parseInt(atom.getID())));
+										atoms.add(Integer.parseInt(atom.getID()));
 									}
 								}
 
@@ -125,21 +131,27 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 								{
 									for (IBond bond : current.values())
 									{								
-										bonds.add((IntCell) IntCellFactory.create(m.getBondNumber(bond)));
+										bonds.add(m.getBondNumber(bond));
 									}
 								}
 
 							}
 
 							countRow = new AppendedColumnRow(row, CollectionCellFactory.createListCell(uniqueCounts),
-									CollectionCellFactory.createListCell(atoms),
-									CollectionCellFactory.createListCell(bonds));
-						} else
+									CollectionCellFactory.createListCell(toCells(atoms)),
+									CollectionCellFactory.createListCell(toCells(bonds)));
+						}
+						else
 						{
 							countRow = new AppendedColumnRow(row, CollectionCellFactory.createListCell(uniqueCounts));
 						}
 					}
+					
+				} else if (smarts.matches(m)) 
+				{
+					matchedRows.add(index);
 				}
+				
 			} catch (ThreadDeath d)
 			{
 				LOGGER.debug("SMARTS Query failed for row \"" + row.getKey() + "\"");
@@ -155,6 +167,11 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 		return new ReplacedColumnsDataRow(countRow, outCell, columnIndex);
 	}
 
+	private List<DataCell> toCells(Collection<Integer> values)
+	{
+		return values.stream().sorted().map(value -> IntCellFactory.create(value)).collect(Collectors.toList());
+	}
+	
 	@Override
 	protected void processFinished(ComputationTask task)
 			throws ExecutionException, CancellationException, InterruptedException

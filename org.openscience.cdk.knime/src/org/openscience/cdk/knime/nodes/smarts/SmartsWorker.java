@@ -17,13 +17,16 @@
 package org.openscience.cdk.knime.nodes.smarts;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.knime.base.data.replace.ReplacedColumnsDataRow;
 import org.knime.core.data.AdapterValue;
@@ -111,8 +114,8 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 						
 						if(matchedPositions)
 						{
-							List<DataCell> atoms = new ArrayList<DataCell>();
-							List<DataCell> bonds = new ArrayList<DataCell>();
+							Set<Integer> atoms = new HashSet<>();
+							Set<Integer> bonds = new HashSet<>();
 
 							for (Mappings map : mappings)
 							{
@@ -120,7 +123,7 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 								{
 									for (IAtom atom : current.values())
 									{
-										atoms.add((IntCell) IntCellFactory.create(Integer.parseInt(atom.getID())));
+										atoms.add(Integer.parseInt(atom.getID()));
 									}
 								}
 
@@ -128,18 +131,15 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 								{
 									for (IBond bond : current.values())
 									{								
-										bonds.add((IntCell) IntCellFactory.create(m.getBondNumber(bond)));
+										bonds.add(m.getBondNumber(bond));
 									}
 								}
-								
-								atoms.sort((a, b) -> Integer.compare(((IntCell) a).getIntValue(), ((IntCell) b).getIntValue()));
-								bonds.sort((a, b) -> Integer.compare(((IntCell) a).getIntValue(), ((IntCell) b).getIntValue()));
 
 							}
 
 							countRow = new AppendedColumnRow(row, CollectionCellFactory.createListCell(uniqueCounts),
-									CollectionCellFactory.createListCell(atoms),
-									CollectionCellFactory.createListCell(bonds));
+									CollectionCellFactory.createListCell(toCells(atoms)),
+									CollectionCellFactory.createListCell(toCells(bonds)));
 						}
 						else
 						{
@@ -167,6 +167,11 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 		return new ReplacedColumnsDataRow(countRow, outCell, columnIndex);
 	}
 
+	private List<DataCell> toCells(Collection<Integer> values)
+	{
+		return values.stream().sorted().map(value -> IntCellFactory.create(value)).collect(Collectors.toList());
+	}
+	
 	@Override
 	protected void processFinished(ComputationTask task)
 			throws ExecutionException, CancellationException, InterruptedException

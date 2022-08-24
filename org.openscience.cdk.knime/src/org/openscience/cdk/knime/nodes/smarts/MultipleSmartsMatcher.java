@@ -55,7 +55,6 @@ public class MultipleSmartsMatcher
 		for(SmartsPattern pattern : patterns) 
 		{
 			Mappings mappings = pattern.matchAll(container);
-			// TODO: the old code uses SmartsStereoMatch and ComponentGrouping to filter the matches, is this still needed?
 			
 			cells.add(IntCellFactory.create(mappings.countUnique()));
 		}
@@ -74,7 +73,6 @@ public class MultipleSmartsMatcher
 		
 		for(SmartsPattern pattern : patterns) 
 		{
-			// TODO: the old code uses SmartsStereoMatch and ComponentGrouping to filter the matches, is this still needed?
 			mappings.add(pattern.matchAll(container));
 		}
 		

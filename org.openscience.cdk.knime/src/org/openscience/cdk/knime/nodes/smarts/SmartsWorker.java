@@ -45,7 +45,6 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.isomorphism.Mappings;
 import org.openscience.cdk.knime.type.CDKCell3;
 import org.openscience.cdk.knime.type.CDKValue;
-import org.openscience.cdk.smiles.smarts.SmartSMARTSQueryTool;
 
 public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 {
@@ -60,7 +59,7 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 	private final boolean count;
 	private final boolean matchedPositions;
 
-	private final SmartSMARTSQueryTool smarts;
+	private final MultipleSmartsMatcher smarts;
 	private final Set<Long> matchedRows;
 
 	public SmartsWorker(final int maxQueueSize, final int maxActiveInstanceSize, final int columnIndex, final long max,
@@ -73,7 +72,7 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 		this.bdc = bdc;
 		this.count = count;
 		this.max = max;
-		this.smarts = new SmartSMARTSQueryTool(smarts);
+		this.smarts = new MultipleSmartsMatcher(smarts);
 		this.columnIndex = columnIndex;
 		this.matchedRows = Collections.synchronizedSet(new HashSet<Long>());
 		this.matchedPositions = matchedPositions;
@@ -84,10 +83,9 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 	{
 
 		DataCell outCell;
-		List<IntCell> uniqueCounts = new ArrayList<>();
+		List<DataCell> uniqueCounts = new ArrayList<>();
 		DataRow countRow = row;
-		if (row.getCell(columnIndex).isMissing()
-				|| (((AdapterValue) row.getCell(columnIndex)).getAdapterError(CDKValue.class) != null))
+		if (row.getCell(columnIndex).isMissing() || (((AdapterValue) row.getCell(columnIndex)).getAdapterError(CDKValue.class) != null))
 		{
 			outCell = DataType.getMissingCell();
 		} else
@@ -97,17 +95,22 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 
 			try
 			{
-				if (smarts.matches(m))
+				
+				if(count || matchedPositions) 
 				{
-					matchedRows.add(index);
-					if (count || matchedPositions)
+					List<Mappings> mappings = smarts.getMappings(m);
+					
+					if(mappings.stream().filter(mapping -> mapping.atLeast(1)).findAny().isPresent()) 
 					{
-						uniqueCounts = smarts.countUnique(m);
-
-						if (matchedPositions)
+						matchedRows.add(index);
+						
+						for(Mappings mapping : mappings)
 						{
-							List<Mappings> mappings = smarts.getMappings(m);
-
+							uniqueCounts.add(IntCellFactory.create(mapping.countUnique()));
+						}
+						
+						if(matchedPositions)
+						{
 							List<DataCell> atoms = new ArrayList<DataCell>();
 							List<DataCell> bonds = new ArrayList<DataCell>();
 
@@ -128,18 +131,27 @@ public class SmartsWorker extends MultiThreadWorker<DataRow, DataRow>
 										bonds.add((IntCell) IntCellFactory.create(m.getBondNumber(bond)));
 									}
 								}
+								
+								atoms.sort((a, b) -> Integer.compare(((IntCell) a).getIntValue(), ((IntCell) b).getIntValue()));
+								bonds.sort((a, b) -> Integer.compare(((IntCell) a).getIntValue(), ((IntCell) b).getIntValue()));
 
 							}
 
 							countRow = new AppendedColumnRow(row, CollectionCellFactory.createListCell(uniqueCounts),
 									CollectionCellFactory.createListCell(atoms),
 									CollectionCellFactory.createListCell(bonds));
-						} else
+						}
+						else
 						{
 							countRow = new AppendedColumnRow(row, CollectionCellFactory.createListCell(uniqueCounts));
 						}
 					}
+					
+				} else if (smarts.matches(m)) 
+				{
+					matchedRows.add(index);
 				}
+				
 			} catch (ThreadDeath d)
 			{
 				LOGGER.debug("SMARTS Query failed for row \"" + row.getKey() + "\"");

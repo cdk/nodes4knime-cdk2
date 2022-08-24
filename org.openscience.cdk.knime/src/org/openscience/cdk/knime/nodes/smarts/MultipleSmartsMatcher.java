@@ -50,6 +50,8 @@ public class MultipleSmartsMatcher
 	 */
 	public List<DataCell> countUnique(IAtomContainer container)
 	{
+		SmartsPattern.prepare(container);
+		
 		List<DataCell> cells = new ArrayList<>();
 		
 		for(SmartsPattern pattern : patterns) 
@@ -69,6 +71,8 @@ public class MultipleSmartsMatcher
 	 */
 	public List<Mappings> getMappings(IAtomContainer container)
 	{
+		SmartsPattern.prepare(container);
+		
 		List<Mappings> mappings = new ArrayList<>();
 		
 		for(SmartsPattern pattern : patterns) 
